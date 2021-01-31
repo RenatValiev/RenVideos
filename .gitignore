@@ -1,0 +1,5 @@
+__pychache__
+venv
+db.sqlite3
+media/*
+!media/.keepdir

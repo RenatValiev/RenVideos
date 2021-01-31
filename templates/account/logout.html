@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load header %}
+{% block title %}
+    Выйти
+{% endblock title %}
+
+{% block content %}
+    {% get_header 'logout' %}
+    <div class="container">
+        <p class="h4">
+            Вы точно хотите выйти?
+        </p>
+        <div class="row">
+            <div class="col-md-2">
+                <form action="{% url 'account_logout' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-outline-danger" value="Выйти">
+                </form>
+            </div>
+            <div class="col-md-2">
+                <a href="/profile" class="btn btn-outline-success">Остаться</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

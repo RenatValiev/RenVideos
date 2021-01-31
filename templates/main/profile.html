@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load header %}
+
+{% block title %}
+    Мой профиль
+{% endblock title %}
+
+{% block content %}
+    {% get_header 'profile' %}
+    <div class="container">
+        <p class="h3">
+            Профиль пользователя {{ request.user.username }}
+        </p>
+    </div>
+    <hr>
+    <div class="container">
+        <div class="row">
+            <div class="col-md">
+                <p>Каналы:</p>
+                {% if are_channels %}
+                    {% for channel in channel_list %}
+                        <a href="/channel/{{ channel.name }}">{{ channel.name }}</a>
+                    {% endfor %}
+                {% else %}
+                    Нет каналов
+                {% endif %}
+                <br>
+                <a href="/create-channel" class="btn btn-outline-success mt-2">Создать канал</a>
+            </div>
+            <div class="col-md text-center">
+                <a href="/accounts/logout" class="btn btn-outline-danger">Выйти</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

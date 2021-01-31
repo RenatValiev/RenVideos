@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load header %}
+
+{% block title %}
+    {{ video.name }}
+{% endblock title %}
+
+{% block content %}
+    {% get_header 'video' %}
+    <div class="container text-center">
+        <p class="h1 user-select-all">{{ video.name }}</p>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8">
+                <video src="{{ video.video.url }}" poster="{{ video.poster.url }}" controls
+                       style="width: 100%" class="rounded"></video>
+                <p class="mt-2" style="width: 100%; text-align: right">
+                    {#                    {{ video.channel.owner.username }}#}
+                    <a href="{% url 'channel' video.channel.name %}" class="btn btn-outline-success ml-3">
+                        {{ video.channel.name }}
+                    </a>
+                </p>
+            </div>
+            <div class="col-md mt-2">
+                <p class="h6 border border-secondary" style="padding: 10px">
+                    {{ video.description }}
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="container" id="comments_set">
+        {% for comment in video.comment_set.all %}
+            <div>
+                <h5 class="mt-0">{{ comment.user.username }}</h5>
+                {{ comment.text }}
+                <hr>
+            </div>
+        {% endfor %}
+    </div>
+    {% if request.user.is_authenticated %}
+        <div class="container">
+            <form id="comment_form">
+                <div class="form-group">
+                    <p class="h3">Оставьте комментарий:</p>
+                    <label for="commentText">Текст комментария</label>
+                    <textarea name="text" class="form-control" id="commentText" rows="10"></textarea>
+                    <input type="hidden" name="video" value="{{ video.name }}">
+                    {% csrf_token %}
+                </div>
+                <input type="submit" class="btn btn-outline-success" value="Отправить">
+            </form>
+        </div>
+    {% else %}
+        <div class="container">
+            <p class="h5"><a href="{% url 'account_signup' %}">Зарегестрируйтесь</a>, чтобы оставить комментарий.</p>
+        </div>
+    {% endif %}
+    <hr>
+    <script src="{% static 'js/video_script.js' %}"></script>
+    <input type="hidden" value="{{ request.user.username }}" id="username">
+{% endblock content %}

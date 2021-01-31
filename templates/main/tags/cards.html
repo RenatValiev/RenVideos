@@ -1,0 +1,27 @@
+<style>
+    .two-lines {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        -ms-line-clamp: 2;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        display: -webkit-box;
+        word-wrap: break-word;
+        -webkit-box-orient: vertical;
+        box-orient: vertical;
+    }
+</style>
+<div class="row">
+    {% for video in videos %}
+        <div class="col-md-5">
+            <div class="card">
+                <img src="{{ video.poster.url }}" class="card-img-top img-fluid" alt="image">
+                <div class="card-body">
+                    <h5 class="card-title">{{ video.name }}</h5>
+                    <p class="card-text two-lines">{{ video.description }}</p>
+                    <a href="/video/{{ video.name }}" class="btn btn-primary">Смотреть</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

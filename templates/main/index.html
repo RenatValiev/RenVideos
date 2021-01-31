@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load header %}
+{% load cards %}
+{% block title %}
+    Главная
+{% endblock title %}
+{% block content %}
+
+    {% get_header 'index' %}
+    <div class="container" style="padding-top: 1em">
+        {% cards videos %}
+    </div>
+{% endblock content %}

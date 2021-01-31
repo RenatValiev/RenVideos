@@ -1,0 +1,31 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <a href="/" class="navbar-brand">
+        <img src="{% static 'light-icon.png' %}" alt="logo" width="30" height="30">
+        RVideos
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item {% if page == 'index' %}active{% endif %}">
+                <a class="nav-link" href="/">Главная</a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin" class="nav-link">Админка</a>
+            </li>
+            <li class="nav-item {% if page == 'profile' %}active{% endif %}">
+                <a href="{% url 'profile' %}" class="nav-link">Мой профиль</a>
+            </li>
+        </ul>
+        <form action="/search" class="form-inline">
+            <input class="form-control mr-sm-2" type="search" placeholder="Поиск по видео">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Найти</button>
+        </form>
+    </div>
+</nav>
+<!--Отступ-->
+<div style="height: 3.5em"></div>

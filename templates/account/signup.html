@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Зарегестрироваться
+{% endblock title %}
+
+{% block extra-styles %}
+    <link rel="stylesheet" href="{% static 'css/form-style.css' %}">
+{% endblock extra-styles %}
+
+{% block content %}
+    <form class="form text-center" method="post" action="/accounts/signup/">
+        <img class="mb-4" src="{% static 'icon.png' %}" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 font-weight-normal">Зарегестрируйтесь</h1>
+        <label for="inputEmail" class="sr-only">Логин</label>
+        <input type="text" id="inputEmail" class="form-control" placeholder="Логин" name="username" autocomplete="off"
+               required autofocus>
+        {{ form.errors.username }}
+        <label for="inputPassword" class="sr-only">Пароль</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Пароль" name="password1" required>
+        {{ form.errors.password1 }}
+        <label for="inputRepeat" class="sr-only">Повторите пароль</label>
+        <input type="password" id="inputRepeat" class="form-control" placeholder="Повторите пароль" name="password2"
+               required>
+        {{ form.errors.password2 }}
+        {% csrf_token %}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Зарегестрироваться</button>
+        <br>
+        <h6 class="h6 mb-3 font-weight-normal">Уже есть аккаунт? <a href="/accounts/login">Войдите</a>.</h6>
+    </form>
+{% endblock content %}

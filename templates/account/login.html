@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Войти
+{% endblock title %}
+
+{% block extra-styles %}
+    <link rel="stylesheet" href="{% static 'css/form-style.css' %}">
+{% endblock extra-styles %}
+
+{% block content %}
+    <form class="form text-center" method="post" action="/accounts/login/">
+        <img class="mb-4" src="{% static 'icon.png' %}" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 font-weight-normal">Войдите</h1>
+        <label for="inputEmail" class="sr-only">Логин</label>
+        <input type="text" name="login" id="inputLogin" class="form-control" placeholder="Логин" autocomplete="off" required autofocus>
+        {{ form.errors.login }}
+        <label for="inputPassword" class="sr-only">Пароль</label>
+        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Пароль" required>
+        {% if form.errors %}
+            {% if not form.errors.password %}
+                {% if not form.errors.login %}
+                    <h6 class="h6 mb-3 font-weight-normal"> Неправильно введены пароль и/или имя пользователя.</h6>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+        {% csrf_token %}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
+        <br>
+        <h6 class="h6 mb-3 font-weight-normal">Ещё нет аккаунта? <a href="/accounts/signup">Зарегестрироваться</a>.</h6>
+    </form>
+{% endblock content %}
