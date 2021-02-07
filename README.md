@@ -1,2 +1,0 @@
-# RVideos
-Simple video hosting

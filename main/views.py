@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from .models import Video, Channel, Comment, Category
 from django.contrib.auth.models import User
+from fuzzywuzzy import fuzz
 
 # Главная страница
 
@@ -110,3 +111,20 @@ class UploadVideoView(View):
         response.status_code = 200
         # Возвращаем информацию о выполнении запроса
         return response
+
+
+class Search(View):
+    def get(self, request):
+        print("started")
+        request_text = request.GET.get('request_text')
+        print("request text is " + request_text)
+        videos = Video.objects.all()
+        correct_videos = []
+        for video in videos:
+            # if (fuzz.ratio(video.name.lower(), request_text.lower()) > 45) or (fuzz.ratio(request_text.lower(), video.description.lower()) > 45):
+            if fuzz.ratio(video.name.lower(), request_text.lower()) > 45:
+                print("joined")
+                correct_videos += [video]
+        print('дошёл до конца')
+        print(correct_videos)
+        return render(request, 'main/search.html', {"correct_videos": correct_videos})

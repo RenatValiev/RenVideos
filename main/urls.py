@@ -7,5 +7,6 @@ urlpatterns = [
     path('comment', views.AddCommentView.as_view(), name='comment'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
     path('upload-video', views.UploadVideoView.as_view(), name='upload-video'),
+    path('search', views.Search.as_view(), name='search'),
     path('', views.IndexView.as_view(), name="index")
 ]

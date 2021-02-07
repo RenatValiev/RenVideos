@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load header %}
+{% load cards %}
+
+{% block title %}
+Поиск по видео
+{% endblock title %}
+
+{% block content %}
+{% get_header 'search' %}
+{% if correct_videos.0 is not null %}
+<div class="container">
+    {% cards correct_videos %}
+</div>
+{% else %}
+<div class="container text-center">
+    <p class="h2">
+        Ничего не найдено по вашему запросу
+    </p>
+</div>
+{% endif %}
+{% endblock content %}
