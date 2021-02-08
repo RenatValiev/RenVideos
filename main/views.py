@@ -1,14 +1,18 @@
 # Импортируем необходимые библиотеки
+# Возможность отправки статуса в качестве ответа
 from django.http import HttpResponse
+# Тоже формы ответа сервера
 from django.shortcuts import render, redirect
+# Класс, от которого нужно наследовать view'шки
 from django.views import View
+# Записи базы данных
 from .models import Video, Channel, Comment, Category
 from django.contrib.auth.models import User
+# Нечёткое сравнение
 from fuzzywuzzy import fuzz
 
+
 # Главная страница
-
-
 class IndexView(View):
     def get(self, request):
         videos = Video.objects.all()[::-1]
@@ -113,18 +117,20 @@ class UploadVideoView(View):
         return response
 
 
+# Поиск видео
 class Search(View):
     def get(self, request):
-        print("started")
+        # Получаем текст поиска
         request_text = request.GET.get('request_text')
-        print("request text is " + request_text)
+        # Получаем видео
         videos = Video.objects.all()
+        # Объявляем массив подходящих видео
         correct_videos = []
+        # Обрабатываем массив видео
         for video in videos:
             # if (fuzz.ratio(video.name.lower(), request_text.lower()) > 45) or (fuzz.ratio(request_text.lower(), video.description.lower()) > 45):
+            # Если найдено нужное кол-во совпадений запроса и названиявидео считаем его подходящим
             if fuzz.ratio(video.name.lower(), request_text.lower()) > 45:
-                print("joined")
                 correct_videos += [video]
-        print('дошёл до конца')
-        print(correct_videos)
+        # Возвращаем ответ
         return render(request, 'main/search.html', {"correct_videos": correct_videos})

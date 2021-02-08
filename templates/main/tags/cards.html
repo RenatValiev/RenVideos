@@ -1,3 +1,6 @@
+<!-- Реализация списка видео в виде карточек -->
+<!-- Я вынес в отдельный тег, потому что эта функциональность нужна в нескольких местах, а я не хочу повторять код -->
+<!-- Стил карточек -->
 <style>
     .two-lines {
         text-overflow: ellipsis;
@@ -11,17 +14,18 @@
         box-orient: vertical;
     }
 </style>
+<!-- Сами карточки -->
 <div class="row">
     {% for video in videos %}
-        <div class="col-md-5">
-            <div class="card">
-                <img src="{{ video.poster.url }}" class="card-img-top img-fluid" alt="image">
-                <div class="card-body">
-                    <h5 class="card-title">{{ video.name }}</h5>
-                    <p class="card-text two-lines">{{ video.description }}</p>
-                    <a href="/video/{{ video.name }}" class="btn btn-primary">Смотреть</a>
-                </div>
+    <div class="col-md-5">
+        <div class="card">
+            <img src="{{ video.poster.url }}" class="card-img-top img-fluid" alt="image">
+            <div class="card-body">
+                <h5 class="card-title">{{ video.name }}</h5>
+                <p class="card-text two-lines">{{ video.description }}</p>
+                <a href="/video/{{ video.name }}" class="btn btn-primary">Смотреть</a>
             </div>
         </div>
+    </div>
     {% endfor %}
 </div>
