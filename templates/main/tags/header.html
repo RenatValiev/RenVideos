@@ -1,26 +1,36 @@
 {% load static %}
+<!-- Код верхней панели (navbar'а) -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <!-- Логотип -->
     <a href="/" class="navbar-brand">
         <img src="{% static 'light-icon.png' %}" alt="logo" width="30" height="30">
         RVideos
     </a>
+    <!-- Нужно, чтобы панель нормально работала на мобильных устройствах -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
             aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
+    <!-- Панель навигации -->
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
+            <!-- Главная -->
             <li class="nav-item {% if page == 'index' %}active{% endif %}">
                 <a class="nav-link" href="/">Главная</a>
             </li>
-            <li class="nav-item">
+            <!-- Раскомментируйте код ниже, чтобы добавить пункт "админка" в панель навигации -->
+            <!-- <li class="nav-item">
                 <a href="/admin" class="nav-link">Админка</a>
-            </li>
+            </li> -->
+
+            <!-- Профиль -->
             <li class="nav-item {% if page == 'profile' %}active{% endif %}">
                 <a href="{% url 'profile' %}" class="nav-link">Мой профиль</a>
             </li>
         </ul>
+        
+        <!-- Форма поиска -->
         <form action="/search" method="GET" class="form-inline">
             <input class="form-control mr-sm-2" type="search" placeholder="Поиск по видео" name="request_text">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Найти</button>
@@ -28,4 +38,5 @@
     </div>
 </nav>
 <!--Отступ-->
+<!-- Нужно, чтобы панель не накрывала контент страницы -->
 <div style="height: 3.5em"></div>
