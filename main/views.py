@@ -134,3 +134,30 @@ class Search(View):
                 correct_videos += [video]
         # Возвращаем ответ
         return render(request, 'main/search.html', {"correct_videos": correct_videos})
+
+
+class CreateChannel(View):
+    # Страница с формой создания канала
+    def get(self, request):
+        return render(request, 'main/create-channel.html', {})
+
+    # Создание канала
+    def post(self, request):
+        # Проверяем, вошёл ли пользователь (в принципе, если он не вошёл он не должен отправлять сюда запрос, но на всякий случай надо проверить)
+        if request.user.is_authenticated:
+            # Получаем нужные данные
+            name = request.POST.get("name")
+            description = request.POST.get("description")
+            owner = User.objects.get(username=request.user.username)
+            # Создаём канал
+            new_channel = Channel.objects.create(
+                name=name,
+                description=description,
+                owner=owner,
+            )
+            new_channel.save()
+            response = HttpResponse()
+            response.status_code = 200
+            return response
+        else:
+            return redirect("/accounts/login")

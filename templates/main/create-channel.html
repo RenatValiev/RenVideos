@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load header %}
+{% load static %}
+
+{% block title %}
+Создать канал
+{% endblock title %}
+
+{% block content %}
+{% get_header 'create-channel' %}
+<div class="container">
+    <form id="create-channel-form">
+        <div class="mb-3">
+            <label for="channelName" class="form-label">Название канала</label>
+            <input type="text" class="form-control" id="channelName" name="name">
+        </div>
+        <div class="mb-3">
+            <label for="channelDescription" class="form-label">Описание канала</label>
+            <textarea class="form-control" id="channelDescription" rows="5" name="description"></textarea>
+        </div>
+        <input type="submit" class="btn btn-primary" value="Создать">
+        {% csrf_token %}
+    </form>
+</div>
+<script src="{% static 'js/create-channel.js' %}"></script>
+{% endblock content %}

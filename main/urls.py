@@ -8,5 +8,6 @@ urlpatterns = [
     path('profile/', views.ProfileView.as_view(), name='profile'),
     path('upload-video', views.UploadVideoView.as_view(), name='upload-video'),
     path('search', views.Search.as_view(), name='search'),
+    path('create-channel', views.CreateChannel.as_view(), name='create-channel'),
     path('', views.IndexView.as_view(), name="index")
 ]
