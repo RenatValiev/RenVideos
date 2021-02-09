@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class Channel(models.Model):
     """Канал"""
     name = models.CharField("Название канала", max_length=150)
+    logo = models.ImageField("Картинка канала", upload_to='channel_images/', null=True)
     description = models.TextField("Описание канала")
     owner = models.ForeignKey(User, verbose_name="Владелец канала", on_delete=models.CASCADE)
 

@@ -9,14 +9,18 @@
 {% block content %}
 {% get_header 'create-channel' %}
 <div class="container">
-    <form id="create-channel-form">
+    <form id="create-channel-form" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="channelName" class="form-label">Название канала</label>
-            <input type="text" class="form-control" id="channelName" name="name">
+            <input type="text" class="form-control" id="channelName" name="name" required>
         </div>
         <div class="mb-3">
             <label for="channelDescription" class="form-label">Описание канала</label>
-            <textarea class="form-control" id="channelDescription" rows="5" name="description"></textarea>
+            <textarea class="form-control" id="channelDescription" rows="5" name="description" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="channelLogo" class="form-label">Логотип канала</label>
+            <input class="form-control" type="file" accept=".png, .svg, .gif" name="logo" id="channelLogo" required>
         </div>
         <input type="submit" class="btn btn-primary" value="Создать">
         {% csrf_token %}

@@ -149,11 +149,13 @@ class CreateChannel(View):
             name = request.POST.get("name")
             description = request.POST.get("description")
             owner = User.objects.get(username=request.user.username)
+            logo = request.FILES.get('logo')
             # Создаём канал
             new_channel = Channel.objects.create(
                 name=name,
                 description=description,
                 owner=owner,
+                logo=logo
             )
             new_channel.save()
             response = HttpResponse()

@@ -16,9 +16,9 @@
             <div class="col-lg-8">
                 <video src="{{ video.video.url }}" poster="{{ video.poster.url }}" controls
                        style="width: 100%" class="rounded"></video>
-                <p class="mt-2" style="width: 100%; text-align: right">
-                    {#                    {{ video.channel.owner.username }}#}
-                    <a href="{% url 'channel' video.channel.name %}" class="btn btn-outline-success ml-3">
+                <p class="h4" style="width: 100%; text-align: right">
+                    <a href="{% url 'channel' video.channel.name %}">
+                        <img src="{{ video.channel.logo.url }}" style="border-radius: 50%" width="50px" alt="Логотип канала">
                         {{ video.channel.name }}
                     </a>
                 </p>
