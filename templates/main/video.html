@@ -13,15 +13,22 @@
     </div>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-8" style="text-align: right">
                 <video src="{{ video.video.url }}" poster="{{ video.poster.url }}" controls
                        style="width: 100%" class="rounded"></video>
-                <p class="h4" style="width: 100%; text-align: right">
+                {#                <p class="h4" style="width: 100%; text-align: right">#}
+                <p class="h4">
                     <a href="{% url 'channel' video.channel.name %}">
-                        <img src="{{ video.channel.logo.url }}" style="border-radius: 50%" width="50px" alt="Логотип канала">
+                        <img src="{{ video.channel.logo.url }}" style="border-radius: 50%" width="50px"
+                             alt="Логотип канала">
                         {{ video.channel.name }}
                     </a>
                 </p>
+                {% if video.channel.owner.username == request.user.username %}
+                    <button class="btn btn-outline-danger mt-2" data-toggle="modal" data-target="#dropVideoModal">
+                        Удалить видео
+                    </button>
+                {% endif %}
             </div>
             <div class="col-md mt-2">
                 <p class="h6 border border-secondary" style="padding: 10px">
@@ -59,6 +66,30 @@
         </div>
     {% endif %}
     <hr>
+    {% if video.channel.owner.username == request.user.username %}
+        <div class="modal fade" id="dropVideoModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Удалить видео</h5>
+                    </div>
+                    <form id="drop-video-form" method='post'>
+                        <div class="modal-body">
+                            <label for="dropVideoName">Введите название видео, чтобы подтвердить, что вы не
+                                робот</label>
+                            <input type="text" class="form-control" id="dropVideoName" name="video-name"
+                                   autocomplete="off" required>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                            <input type="submit" class="btn btn-primary" value="Удалить">
+                        </div>
+                        {% csrf_token %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     <script src="{% static 'js/video_script.js' %}"></script>
     <input type="hidden" value="{{ request.user.username }}" id="username">
 {% endblock content %}

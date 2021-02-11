@@ -32,3 +32,21 @@ comment_form.addEventListener('submit',
         })
     }
 )
+
+let drop_video_form = document.querySelector('form[id=drop-video-form]')
+drop_video_form.addEventListener("submit", function (e) {
+    e.preventDefault()
+    let form_data = new FormData(this)
+    fetch('/drop-video', {
+        method: 'POST',
+        body: form_data
+    }).then(response => {
+        if (response.ok) {
+            alert("Видео успешно удалёно.")
+            document.location.replace('/')
+        }
+        else {
+            alert("Ошибка при удалении видео. Повторите попытку позже.")
+        }
+    })
+})

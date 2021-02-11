@@ -9,5 +9,7 @@ urlpatterns = [
     path('upload-video', views.UploadVideoView.as_view(), name='upload-video'),
     path('search', views.Search.as_view(), name='search'),
     path('create-channel', views.CreateChannel.as_view(), name='create-channel'),
+    path('drop-channel', views.DropChannel.as_view(), name='drop-channel'),
+    path('drop-video', views.DropVideo.as_view(), name='drop-video'),
     path('', views.IndexView.as_view(), name="index")
 ]

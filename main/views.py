@@ -12,6 +12,24 @@ from django.contrib.auth.models import User
 from fuzzywuzzy import fuzz
 
 
+# Старая функция, потом удалю
+# def drop(request:object):
+#     try:
+#         name = request.POST.get("channel-name")
+#         note_in_db = Channel.objects.get(name=name)
+#         if note_in_db.owner.username == request.user.username:
+#             delete = True
+#         else:
+#             return "incorrect username"
+#     except:
+#         name = request.POST.get("video-name")
+#         note_in_db = Video.objects.get(name=name)
+#         if note_in_db.channel.owner.username == request.user.username:
+#             delete = True
+#         else:
+#             return "incorrect username"
+
+
 # Главная страница
 class IndexView(View):
     def get(self, request):
@@ -74,14 +92,15 @@ class ProfileView(View):
         if request.user.is_authenticated:
             # Получаем список каналов, владельцем которых является пользователь
             try:
-                channel_list = Channel.objects.get(
+                channel_list = Channel.objects.filter(
                     owner__username=request.user.username)
-                try:
-                    channel_list[0]
-                except:
-                    channel_list = [channel_list]
+                # try:
+                #     channel_list[0]
+                # except:
+                #     channel_list = [channel_list]
                 are_channels = True
             except:
+                print("no channels")
                 channel_list = []
                 are_channels = False
             # Возвращаем результат
@@ -163,3 +182,61 @@ class CreateChannel(View):
             return response
         else:
             return redirect("/accounts/login")
+
+
+class DropChannel(View):
+    """Удаление канала"""
+
+    def post(self, request):
+        # Проверяем, вошёл ли пользователь
+        if request.user.is_authenticated:
+            # Получаем введённо имя канала
+            channel_name = request.POST.get('channel-name')
+            # Начинаем готовить ответ пользователю
+            response = HttpResponse()
+            # Пробуем получить объект базы данных
+            try:
+                channel = Channel.objects.get(name=channel_name)
+            except:
+                # Если не получается, значит введено неверное имя канала
+                response.status_code = 405
+                return response
+            # Проверяем, является ли пользователь владельцем канала
+            if request.user.username == channel.owner.username:
+                # Удаляем объект
+                channel.delete()
+                response.status_code = 200
+                return response
+            else:
+                response.status_code = 405
+                return response
+        else:
+            return redirect('/accounts/login')
+
+
+class DropVideo(View):
+    def post(self, request):
+        # Проверяем, вошёл ли пользователь
+        if request.user.is_authenticated:
+            # Получаем введённо имя канала
+            video_name = request.POST.get('video-name')
+            # Начинаем готовить ответ пользователю
+            response = HttpResponse()
+            # Пробуем получить объект базы данных
+            try:
+                video = Video.objects.get(name=video_name)
+            except:
+                # Если не получается, значит введено неверное имя канала
+                response.status_code = 405
+                return response
+            # Проверяем, является ли пользователь владельцем канала
+            if request.user.username == video.channel.owner.username:
+                # Удаляем объект
+                video.delete()
+                response.status_code = 200
+                return response
+            else:
+                response.status_code = 405
+                return response
+        else:
+            return redirect('/accounts/login')

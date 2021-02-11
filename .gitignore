@@ -3,4 +3,6 @@ venv
 db.sqlite3
 media/*
 !media/.keepdir
-.vscode/*
+.vscode
+.idea/*
+.idea

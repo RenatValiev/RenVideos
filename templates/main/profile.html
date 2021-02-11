@@ -7,19 +7,18 @@
 
 {% block content %}
     {% get_header 'profile' %}
-    <div class="container">
+    <div class="container text-center mb-3">
         <p class="h3">
             Профиль пользователя {{ request.user.username }}
         </p>
     </div>
-    <hr>
     <div class="container">
         <div class="row">
             <div class="col-md">
                 <p>Каналы:</p>
                 {% if are_channels %}
                     {% for channel in channel_list %}
-                        <a href="/channel/{{ channel.name }}">{{ channel.name }}</a>
+                        <a href="/channel/{{ channel.name }}" title="{{ channel.description }}"><img src="{{ channel.logo.url }}" width="20px" style="border-radius: 50%;">{{ channel.name }}</a><br>
                     {% endfor %}
                 {% else %}
                     Нет каналов

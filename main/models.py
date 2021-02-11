@@ -11,7 +11,6 @@ class Channel(models.Model):
 
     def __str__(self):
         return self.name
-        # return self.owner.username + ": " + self.name
 
     class Meta:
         verbose_name = "Канал"
