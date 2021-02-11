@@ -42,7 +42,3 @@ source ./venv/bin/activate
 pip install -r ./requirements.txt
 python manage.py runserver
 ```
-
-P. S.
-Проект ещё развивается, поэтому если у вас есть какие-либо мысли по направлению дальнейшего развития, идеи или баги прошу в раздел issues.
-Удачного использования!
