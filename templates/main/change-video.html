@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load header %}
+{% load static %}
+
+{% block title %}
+    {{ video.name }}
+{% endblock title %}
+
+{% block content %}
+    {% get_header 'change-video' %}
+    <div class="container">
+        <form id="change-video-form" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Название</label>
+                <input type="text" class="form-control" id="name" name="name" autocomplete="off"
+                       value="{{ video.name }}">
+            </div>
+            <div class="form-group">
+                <label for="video">Видео</label>
+                <input type="file" name="video" class="form-control-file" id="video" accept="video/mp4">
+            </div>
+            <div class="form-group">
+                <label for="poster">Постер</label>
+                <input type="file" name="poster" class="form-control-file" id="poster"
+                       accept="image/jpeg,image/jpg,image/png,image/gif">
+            </div>
+            <div class="form-group">
+                <label for="category">Категория</label>
+                <select class="form-control" name="category" id="category">
+                    {% for category in categories %}
+                        <option {% if category.name == video.category.name %}selected="selected"{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="description">Описание</label>
+                <textarea name="description" id="description" rows="10" class="form-control">{{ video.description }}</textarea>
+                {% csrf_token %}
+                <input type="hidden" value="{{ video.id }}" name="id">
+            </div>
+            <input type="submit" class="btn btn-outline-success mb-2" value="Загрузить">
+        </form>
+    </div>
+    <script src="{% static 'js/change-video_script.js' %}"></script>
+{% endblock content %}

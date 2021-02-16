@@ -11,5 +11,7 @@ urlpatterns = [
     path('create-channel', views.CreateChannel.as_view(), name='create-channel'),
     path('drop-channel', views.DropChannel.as_view(), name='drop-channel'),
     path('drop-video', views.DropVideo.as_view(), name='drop-video'),
+    path('change-video-page/<str:video>', views.ChangeVideoPage.as_view(), name='change-video'),
+    path('change-video', views.ChangeVideo.as_view()),
     path('', views.IndexView.as_view(), name="index")
 ]

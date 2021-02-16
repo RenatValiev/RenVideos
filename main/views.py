@@ -240,3 +240,50 @@ class DropVideo(View):
                 return response
         else:
             return redirect('/accounts/login')
+
+
+class ChangeVideoPage(View):
+    def get(self, request, video):
+        try:
+            video = Video.objects.get(name=video)
+            categories = Category.objects.all()
+        except:
+            pass
+        return render(request, 'main/change-video.html', {"video": video, "categories": categories})
+
+
+class ChangeVideo(View):
+    def post(self, request):
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        category = request.POST.get('category')
+        id = request.POST.get('id')
+        response = HttpResponse()
+        print(name)
+        try:
+            video = Video.objects.get(id=id)
+        except:
+            response.status_code = 404
+            return response
+        video.name = name
+        video.description = description
+        try:
+            category = Category.objects.get(name=category)
+        except:
+            response.status_code = 405
+        video.category = category
+        try:
+            file_video = request.FILES.get('video')
+            if file_video is not None:
+                video.video = file_video
+        except:
+            pass
+        try:
+            poster = request.FILES.get('poster')
+            if poster is not None:
+                video.poster = poster
+        except:
+            pass
+        video.save()
+        response.status_code = 200
+        return response
