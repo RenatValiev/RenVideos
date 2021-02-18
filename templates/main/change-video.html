@@ -34,11 +34,13 @@
             </div>
             <div class="form-group">
                 <label for="description">Описание</label>
-                <textarea name="description" id="description" rows="10" class="form-control">{{ video.description }}</textarea>
+                <textarea name="description" id="description" rows="10"
+                          class="form-control">{{ video.description }}</textarea>
                 {% csrf_token %}
                 <input type="hidden" value="{{ video.id }}" name="id">
             </div>
             <input type="submit" class="btn btn-outline-success mb-2" value="Загрузить">
+            <a href="{% url 'video' video.name %}" class="btn btn-outline-success mb-2">Перейти на страницу видео</a>
         </form>
     </div>
     <script src="{% static 'js/change-video_script.js' %}"></script>
