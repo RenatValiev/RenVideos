@@ -16,21 +16,9 @@
                        value="{{ video.name }}">
             </div>
             <div class="form-group">
-                <label for="video">Видео</label>
-                <input type="file" name="video" class="form-control-file" id="video" accept="video/mp4">
-            </div>
-            <div class="form-group">
-                <label for="poster">Постер</label>
+                <label for="poster">Аватар</label>
                 <input type="file" name="poster" class="form-control-file" id="poster"
                        accept="image/jpeg,image/jpg,image/png,image/gif">
-            </div>
-            <div class="form-group">
-                <label for="category">Категория</label>
-                <select class="form-control" name="category" id="category">
-                    {% for category in categories %}
-                        <option {% if category.name == video.category.name %}selected="selected"{% endif %}>{{ category.name }}</option>
-                    {% endfor %}
-                </select>
             </div>
             <div class="form-group">
                 <label for="description">Описание</label>
@@ -40,8 +28,8 @@
                 <input type="hidden" value="{{ video.id }}" name="id">
             </div>
             <input type="submit" class="btn btn-outline-success mb-2" value="Сохранить изменения">
-            <a href="{% url 'video' video.name %}" class="btn btn-outline-success mb-2">Перейти на страницу видео</a>
+            <a href="{% url 'video' video.name %}" class="btn btn-outline-success mb-2">Перейти на страницу канала</a>
         </form>
     </div>
-    <script src="{% static 'js/change-video_script.js' %}"></script>
+    <script src="{% static 'js/change-channel_script.js' %}"></script>
 {% endblock content %}
