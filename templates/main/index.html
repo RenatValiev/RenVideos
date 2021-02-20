@@ -7,7 +7,20 @@
 {% block content %}
 
     {% get_header 'index' %}
-    <div class="container" style="padding-top: 1em">
-        {% cards videos %}
-    </div>
+    {% if videos %}
+        <div class="container" style="padding-top: 1em">
+            {% cards videos %}
+        </div>
+    {% else %}
+        <div class="container text-center">
+            <p class="h1">Ещё не загружено ни одно видео.</p>
+        </div>
+        <div class="container">
+            <p class="h5" style="text-indent: 20px">
+                На сайте ещё нет ни одного видео. Чтобы загрузить видео, необходимо создать/выбрать созданный канал во
+                вкладке "мой профиль", перейти на его главную страницу и заполнить необходимые поля под заголовком
+                "Загрузить видео".
+            </p>
+        </div>
+    {% endif %}
 {% endblock content %}

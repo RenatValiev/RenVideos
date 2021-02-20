@@ -1,15 +1,16 @@
 let video_form = document.getElementById("video-form")
 video_form.addEventListener('submit', function (e) {
     e.preventDefault()
+    setTimeout(() => {alert("Началась загрузка видео. Не закрывайте страницу, пока не появится сообщение об успешном завершении операции. Нажмите ok")}, 1)
     let form_data = new FormData(this)
     fetch('/upload-video', {
         method: 'POST',
         body: form_data
     }).then(response => {
         if (response.ok) {
-            alert("ok")
+            alert("Видео успешно загружено. Обновите страницу, чтобы увидеть его.")
         } else {
-            alert("error")
+            alert("Возникла ошибка. Повторите попытку позже.")
         }
     })
 })

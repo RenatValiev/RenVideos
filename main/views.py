@@ -11,25 +11,6 @@ from django.contrib.auth.models import User
 # Нечёткое сравнение
 from fuzzywuzzy import fuzz
 
-
-# Старая функция, потом удалю
-# def drop(request:object):
-#     try:
-#         name = request.POST.get("channel-name")
-#         note_in_db = Channel.objects.get(name=name)
-#         if note_in_db.owner.username == request.user.username:
-#             delete = True
-#         else:
-#             return "incorrect username"
-#     except:
-#         name = request.POST.get("video-name")
-#         note_in_db = Video.objects.get(name=name)
-#         if note_in_db.channel.owner.username == request.user.username:
-#             delete = True
-#         else:
-#             return "incorrect username"
-
-
 # Главная страница
 class IndexView(View):
     def get(self, request):
