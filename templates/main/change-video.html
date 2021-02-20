@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block title %}
-    {{ video.name }}
+    Изменить видео: {{ video.name }}
 {% endblock title %}
 
 {% block content %}
@@ -40,7 +40,7 @@
                 <input type="hidden" value="{{ video.id }}" name="id">
             </div>
             <input type="submit" class="btn btn-outline-success mb-2" value="Сохранить изменения">
-            <a href="{% url 'video' video.name %}" class="btn btn-outline-success mb-2">Перейти на страницу видео</a>
+            <a href="{% url 'video' video.name %}" class="btn btn-outline-success mb-2" id="link">Перейти на страницу видео</a>
         </form>
     </div>
     <script src="{% static 'js/change-video_script.js' %}"></script>

@@ -3,17 +3,17 @@
 {% load static %}
 
 {% block title %}
-    {{ video.name }}
+    Изменить канал: {{ channel.name }}
 {% endblock title %}
 
 {% block content %}
     {% get_header 'change-video' %}
     <div class="container">
-        <form id="change-video-form" enctype="multipart/form-data">
+        <form id="change-channel-form" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="name">Название</label>
                 <input type="text" class="form-control" id="name" name="name" autocomplete="off"
-                       value="{{ video.name }}">
+                       value="{{ channel.name }}">
             </div>
             <div class="form-group">
                 <label for="poster">Аватар</label>
@@ -23,12 +23,12 @@
             <div class="form-group">
                 <label for="description">Описание</label>
                 <textarea name="description" id="description" rows="10"
-                          class="form-control">{{ video.description }}</textarea>
+                          class="form-control">{{ channel.description }}</textarea>
                 {% csrf_token %}
-                <input type="hidden" value="{{ video.id }}" name="id">
+                <input type="hidden" value="{{ channel.id }}" name="id">
             </div>
             <input type="submit" class="btn btn-outline-success mb-2" value="Сохранить изменения">
-            <a href="{% url 'video' video.name %}" class="btn btn-outline-success mb-2">Перейти на страницу канала</a>
+            <a href="{% url 'channel' channel.name %}" class="btn btn-outline-success mb-2" id="link">Перейти на страницу канала</a>
         </form>
     </div>
     <script src="{% static 'js/change-channel_script.js' %}"></script>

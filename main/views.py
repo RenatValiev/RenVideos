@@ -259,7 +259,6 @@ class ChangeVideo(View):
         category = request.POST.get('category')
         id = request.POST.get('id')
         response = HttpResponse()
-        print(name)
         try:
             video = Video.objects.get(id=id)
         except:
@@ -285,5 +284,38 @@ class ChangeVideo(View):
         except:
             pass
         video.save()
+        response.status_code = 200
+        return response
+
+
+class ChangeChannelPage(View):
+    def get(self, request, channel):
+        try:
+            channel = Channel.objects.get(name=channel)
+        except:
+            pass
+        return render(request, 'main/change-channel.html', {"channel": channel})
+
+
+class ChangeChannel(View):
+    def post(self, request):
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        id = request.POST.get('id')
+        response = HttpResponse()
+        try:
+            channel = Channel.objects.get(id=id)
+        except:
+            response.status_code = 404
+            return response
+        channel.name = name
+        channel.description = description
+        try:
+            logo = request.FILES.get('logo')
+            if logo is not None:
+                channel.logo = logo
+        except:
+            pass
+        channel.save()
         response.status_code = 200
         return response
