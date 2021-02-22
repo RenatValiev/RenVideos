@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 # Нечёткое сравнение
 from fuzzywuzzy import fuzz
 
+
 # Главная страница
 class IndexView(View):
     def get(self, request):
@@ -129,6 +130,7 @@ class Search(View):
         # Обрабатываем массив видео
         for video in videos:
             # if (fuzz.ratio(video.name.lower(), request_text.lower()) > 45) or (fuzz.ratio(request_text.lower(), video.description.lower()) > 45):
+
             # Если найдено нужное кол-во совпадений запроса и названиявидео считаем его подходящим
             if fuzz.ratio(video.name.lower(), request_text.lower()) > 45:
                 correct_videos += [video]
@@ -299,4 +301,32 @@ class ChangeChannel(View):
             pass
         channel.save()
         response.status_code = 200
+        return response
+
+
+class LikeVideo(View):
+    """Возможность ставить лайк или дизлайк видео"""
+
+    def post(self, request):
+        user = User.objects.get(username=request.user.username)
+        name = request.POST.get('name')
+        response = HttpResponse()
+        try:
+            video = Video.objects.get(name=name)
+        except:
+            response.status_code = 405
+            return response
+        try:
+            video.rated_by.get(username=request.user.username)
+            response.status_code = 201
+        except:
+            video.rated_by.add(user)
+            if request.POST.get('type') == 'like':
+                video.likes += 1
+            elif request.POST.get('type') == 'dislike':
+                video.dislikes += 1
+            else:
+                print("error")
+            video.save()
+            response.status_code = 200
         return response

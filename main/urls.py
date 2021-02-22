@@ -15,5 +15,6 @@ urlpatterns = [
     path('change-video', views.ChangeVideo.as_view()),
     path('change-channel-page/<str:channel>', views.ChangeChannelPage.as_view(), name='change-channel'),
     path('change-channel', views.ChangeChannel.as_view()),
+    path('like', views.LikeVideo.as_view()),
     path('', views.IndexView.as_view(), name="index")
 ]

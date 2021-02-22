@@ -44,9 +44,34 @@ drop_video_form.addEventListener("submit", function (e) {
         if (response.ok) {
             alert("Видео успешно удалёно.")
             document.location.replace('/')
-        }
-        else {
+        } else {
             alert("Ошибка при удалении видео. Повторите попытку позже.")
         }
     })
 })
+
+function like(type_of_operation) {
+    let form_data = new FormData()
+    form_data.append('name', document.getElementById('hidden-name').value)
+    form_data.append('type', type_of_operation)
+    form_data.append('csrfmiddlewaretoken', document.querySelector('input[name=csrfmiddlewaretoken]').value)
+    fetch('/like', {
+        method: 'POST',
+        body: form_data
+    }).then(response => {
+        if (response.ok) {
+            if (response.status === 200) {
+                let counter = document.getElementById(`${type_of_operation}-counter`)
+                let num = Number(counter.innerHTML)
+                num += 1
+                counter.innerHTML = String(num)
+            } else if (response.status === 201) {
+                alert("Вы уже поставили оценку этому видео. Вы не можете поставить ещё одну.")
+            } else {
+                alert("error")
+            }
+        } else {
+            alert("Ошибка")
+        }
+    })
+}
