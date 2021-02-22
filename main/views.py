@@ -226,34 +226,50 @@ class DropVideo(View):
 
 
 class ChangeVideoPage(View):
+    """Страница изменения видео"""
+
     def get(self, request, video):
+        # Пробуем получить видео
         try:
             video = Video.objects.get(name=video)
+            # Получаем список доступных категорий
             categories = Category.objects.all()
+            # Возвращаем отрендеренную страницу
+            return render(request, 'main/change-video.html', {"video": video, "categories": categories})
         except:
-            pass
-        return render(request, 'main/change-video.html', {"video": video, "categories": categories})
+            # Если не получается, то отправляем пользователя на главную страницу
+            return redirect('/')
 
 
 class ChangeVideo(View):
+    """Изменение видео"""
+
     def post(self, request):
+        # Получаем данные из запроса
         name = request.POST.get('name')
         description = request.POST.get('description')
         category = request.POST.get('category')
         id = request.POST.get('id')
+        # Создаём объект ответа
         response = HttpResponse()
+        # Пробуем получить видео
         try:
             video = Video.objects.get(id=id)
         except:
             response.status_code = 404
             return response
+        # Применяем изменения названия и описания
         video.name = name
         video.description = description
+        # Немного безопасности
         try:
             category = Category.objects.get(name=category)
         except:
             response.status_code = 405
+            return response
+        # Применяем изменения категории
         video.category = category
+        # Проверяем, были ли внемены изменения файла видео и постера, если да, то применяем
         try:
             file_video = request.FILES.get('video')
             if file_video is not None:
@@ -266,12 +282,16 @@ class ChangeVideo(View):
                 video.poster = poster
         except:
             pass
+        # Сохраняем изменения
         video.save()
+        # Отправляем информацию об успешном выполнении запроса
         response.status_code = 200
         return response
 
 
 class ChangeChannelPage(View):
+    """Страница изменения канала"""
+
     def get(self, request, channel):
         try:
             channel = Channel.objects.get(name=channel)
@@ -281,6 +301,8 @@ class ChangeChannelPage(View):
 
 
 class ChangeChannel(View):
+    """Изменение канала"""
+
     def post(self, request):
         name = request.POST.get('name')
         description = request.POST.get('description')
@@ -308,25 +330,36 @@ class LikeVideo(View):
     """Возможность ставить лайк или дизлайк видео"""
 
     def post(self, request):
+        # Получаем объект пользователя
         user = User.objects.get(username=request.user.username)
+        # Получаем имя нужного видео
         name = request.POST.get('name')
+        # Создаём объект ответа
         response = HttpResponse()
+        # Пробуем получить объект видео в базе данных
         try:
             video = Video.objects.get(name=name)
         except:
             response.status_code = 405
             return response
+        # Проверяем, не ставил ли пользователь оценку видео раньше
         try:
             video.rated_by.get(username=request.user.username)
             response.status_code = 201
         except:
+            # Если не ставил, то записываем, что теперь поставил
             video.rated_by.add(user)
+            # Увеличиваем на 1 кол-во лайков/дизлайков
             if request.POST.get('type') == 'like':
                 video.likes += 1
             elif request.POST.get('type') == 'dislike':
                 video.dislikes += 1
             else:
+                # Если не лайк, и не дизлайк, то сообщаем об ошибке
                 print("error")
+                response.status_code = 405
+                return response
+            # Сохраняем изменения
             video.save()
             response.status_code = 200
-        return response
+            return response
