@@ -36,7 +36,10 @@ class Video(models.Model):
     description = models.TextField("Описание видео")
     likes = models.IntegerField("Кол-во лайков", default=0)
     dislikes = models.IntegerField("Кол-во дизлайков", default=0)
-    rated_by = models.ManyToManyField(User, verbose_name="Пользователи, давшие оценку видео")
+    liked_by = models.ManyToManyField(User, verbose_name="Пользователи, поставившие видео лайк",
+                                      related_name='liked_users')
+    disliked_by = models.ManyToManyField(User, verbose_name="Пользователи, поставившие видео дизлайк",
+                                         related_name='disliked_users')
     category = models.ForeignKey(Category, verbose_name="Категория", on_delete=models.CASCADE)
     channel = models.ForeignKey(Channel, verbose_name="Канал", on_delete=models.CASCADE)
     video = models.FileField("Видео", upload_to="videos/videos/")

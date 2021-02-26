@@ -22,8 +22,19 @@ class IndexView(View):
 # Страница видео
 class VideoView(View):
     def get(self, request, name):
+        reaction = 'none'
         video = Video.objects.get(name=name)
-        return render(request, 'main/video.html', {"video": video})
+        if request.user.is_authenticated:
+            try:
+                video.liked_by.get(username=request.user.username)
+                reaction = 'like'
+            except:
+                try:
+                    video.disliked_by.get(username=request.user.username)
+                    reaction = 'dislike'
+                except:
+                    reaction = 'none'
+        return render(request, 'main/video.html', {"video": video, "reaction": reaction})
 
 
 # Страница канала
@@ -334,32 +345,99 @@ class LikeVideo(View):
         user = User.objects.get(username=request.user.username)
         # Получаем имя нужного видео
         name = request.POST.get('name')
+        type_of_operation = request.POST.get('type')
         # Создаём объект ответа
         response = HttpResponse()
         # Пробуем получить объект видео в базе данных
         try:
             video = Video.objects.get(name=name)
+            # video.liked_by.remove(user)
+            # video.disliked_by.remove(user)
+            # video.rated_by.remove(user)
         except:
             response.status_code = 405
             return response
-        # Проверяем, не ставил ли пользователь оценку видео раньше
+        # Проверяем, не ставил ли пользователь оценку видео раньше и если ставил, то какую
+        liked = False
+        disliked = False
         try:
-            video.rated_by.get(username=request.user.username)
-            response.status_code = 201
+            video.liked_by.get(username=request.user.username)
+            liked = True
         except:
-            # Если не ставил, то записываем, что теперь поставил
-            video.rated_by.add(user)
-            # Увеличиваем на 1 кол-во лайков/дизлайков
+            pass
+        try:
+            video.disliked_by.get(username=request.user.username)
+            disliked = True
+        except:
+            pass
+        # Обрабатываем полученные ранее данные
+        if (not liked) and (not disliked):
+            # Если ещё не ставил оценки, то ставим нужную
             if request.POST.get('type') == 'like':
+                print('1')
                 video.likes += 1
+                video.liked_by.add(user)
+                response.status_code = 200
             elif request.POST.get('type') == 'dislike':
+                print(2)
                 video.dislikes += 1
+                video.disliked_by.add(user)
             else:
                 # Если не лайк, и не дизлайк, то сообщаем об ошибке
                 print("error")
                 response.status_code = 405
                 return response
-            # Сохраняем изменения
-            video.save()
-            response.status_code = 200
-            return response
+        elif (not liked) and disliked and (type_of_operation == 'like'):
+            # Если хочет изменить оценку с дизлайка на лайк
+            video.disliked_by.remove(user)
+            video.liked_by.add(user)
+            video.dislikes -= 1
+            video.likes += 1
+            # Статус ответа нужен для нужного сообщения пользователю и изменения элементов страницу (см.
+            # static/js/video_script.js)
+            response.status_code = 202
+        elif liked and (not disliked) and (type_of_operation == 'dislike'):
+            # Если хочет изменить оценку с лайка на дизлайк
+            video.disliked_by.add(user)
+            video.liked_by.remove(user)
+            video.dislikes += 1
+            video.likes -= 1
+            # Статус ответа нужен для нужного сообщения пользователю и изменения элементов страницу (см.
+            # static/js/video_script.js)
+            response.status_code = 203
+        elif liked and (type_of_operation == 'like'):
+            # Если хочет поставить второй лайк
+            response.status_code = 201
+        elif disliked and (type_of_operation == 'dislike'):
+            # Если хочет поставить второй дизлайк
+            response.status_code = 201
+        else:
+            # Если какая-то неведомая ситуация, то надо её обработать
+            print("error")
+            response.status_code = 405
+        # Сохраняем изменения
+        video.save()
+        # Возвращаем ответ
+        return response
+    # Старый код. После того, как буду убеждён в работоспособности нового, будет удалён
+    # except:
+    #     try:
+    #         response.status_code = 201
+    #         video.disliked_by.get(username=request.user.username)
+    #     except:
+    #         # Если не ставил, то записываем, что теперь поставил
+    #         # Увеличиваем на 1 кол-во лайков/дизлайков
+    #         if request.POST.get('type') == 'like':
+    #             video.likes += 1
+    #             video.liked_by.add(user)
+    #         elif request.POST.get('type') == 'dislike':
+    #             video.dislikes += 1
+    #             video.disliked_by.add(user)
+    #         else:
+    #             # Если не лайк, и не дизлайк, то сообщаем об ошибке
+    #             print("error")
+    #             response.status_code = 405
+    #             return response
+    #         # Сохраняем изменения
+    #         video.save()
+    #         response.status_code = 200

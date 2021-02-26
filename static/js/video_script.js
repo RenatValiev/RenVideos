@@ -65,8 +65,38 @@ function like(type_of_operation) {
                 let num = Number(counter.innerHTML)
                 num += 1
                 counter.innerHTML = String(num)
+                let icon = document.getElementById(`${type_of_operation}-icon`)
+                icon.style.fill = 'blue'
             } else if (response.status === 201) {
                 alert("Вы уже поставили оценку этому видео. Вы не можете поставить ещё одну.")
+            } else if (response.status === 202) {
+                let like_counter = document.getElementById(`like-counter`)
+                let like_num = Number(like_counter.innerHTML)
+                like_num += 1
+                like_counter.innerHTML = String(like_num)
+                let like_icon = document.getElementById(`like-icon`)
+                like_icon.style.fill = 'blue'
+
+                let dislike_counter = document.getElementById(`dislike-counter`)
+                let dislike_num = Number(dislike_counter.innerHTML)
+                dislike_num -= 1
+                dislike_counter.innerHTML = String(dislike_num)
+                let dislike_icon = document.getElementById(`dislike-icon`)
+                dislike_icon.style.fill = 'black'
+            } else if (response.status === 203) {
+                let like_counter = document.getElementById(`like-counter`)
+                let like_num = Number(like_counter.innerHTML)
+                like_num -= 1
+                like_counter.innerHTML = String(like_num)
+                let like_icon = document.getElementById(`like-icon`)
+                like_icon.style.fill = 'black'
+
+                let dislike_counter = document.getElementById(`dislike-counter`)
+                let dislike_num = Number(dislike_counter.innerHTML)
+                dislike_num += 1
+                dislike_counter.innerHTML = String(dislike_num)
+                let dislike_icon = document.getElementById(`dislike-icon`)
+                dislike_icon.style.fill = 'blue'
             } else {
                 alert("error")
             }
