@@ -12,15 +12,12 @@
 git clone https://github.com/coder8080/RVideos
 cd ./RVideos
 pip install -r requirements.txt
+python ./generate_token.py
 python ./manage.py makemigrations
 python ./manage.py migrate
 python ./manage.py createsuperuser
 ```
 Если вышеперечисленные команды не работают, проверьте, соблюдены ли системные требования. Если да, то попробуйте вместо python и pip python3 и pip3.
-
-Так же необходимо сгенерировать секретный ключ (ключ безопасности) сайта. Сделать это можно с помощью сайта
-https://djecrety.ir/.
-Затем полученный ключ необходимо вставить в кавычки на 23 строке файла disk/setting.py вместо слов "insert secret key here"
 
 После всех вышеперечисленных действий вы можете запустить сайт:
 ```bash
