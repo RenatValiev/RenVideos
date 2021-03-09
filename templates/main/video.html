@@ -21,7 +21,7 @@
                         <svg width="60px" height="60px" onclick="like('like')">
                             <g id="like-icon"
                                     {% if reaction == 'like' %}
-                                        style="fill: blue"
+                               style="fill: blue"
                                     {% endif %}>
                                 <path d="M9.5,43c-2.757,0-5,2.243-5,5s2.243,5,5,5s5-2.243,5-5S12.257,43,9.5,43z"></path>
                                 <path d="M56.5,35c0-2.495-1.375-3.662-2.715-4.233C54.835,29.85,55.5,28.501,55.5,27c0-2.757-2.243-5-5-5H36.134l0.729-3.41
@@ -34,7 +34,7 @@
                         <svg width="60px" height="60px" onclick="like('dislike')">
                             <g id="dislike-icon"
                                     {% if reaction == 'dislike' %}
-                                        style="fill: blue"
+                               style="fill: blue"
                                     {% endif %}>
                                 <path d="M40.5,0v2h-28c-2.757,0-5,2.243-5,5c0,1.164,0.4,2.236,1.069,3.087C6.255,10.524,4.5,12.561,4.5,15
                                     c0,1.164,0.4,2.236,1.069,3.087C3.255,18.524,1.5,20.561,1.5,23c0,2.495,1.375,3.662,2.715,4.233C3.165,28.15,2.5,29.499,2.5,31
@@ -63,6 +63,9 @@
                     <a href="{% url 'change-video' video.name %}" class="btn btn-outline-warning mt-2">Изменить
                         видео</a>
                 {% endif %}
+                <input type="button" class="btn btn-outline-success mt-2"
+                       onclick="subscribe(`{{ video.channel.name }}`)"
+                       value='Подписаться на канал "{{ video.channel.name }}"'>
             </div>
             <div class="col-md mt-2">
                 <p class="h6 border border-secondary" style="padding: 10px">
@@ -126,6 +129,7 @@
         </div>
     {% endif %}
     <script src="{% static 'js/video_script.js' %}"></script>
+    <script src="{% static 'js/subscribe_script.js' %}"></script>
     <input type="hidden" value="{{ request.user.username }}" id="username">
     <input type="hidden" value="{{ video.name }}" id="hidden-name">
 {% endblock content %}

@@ -26,6 +26,12 @@
             Общее количество видео:
             <mark>{{ count }}</mark>
         </p>
+        <p class="mt-2">
+            Подписчики:
+            <mark>{{ channel.subscribers.count }}</mark>
+        </p>
+        <input type="button" class="btn btn-outline-success mt-2" onclick="subscribe(`{{ channel.name }}`)"
+               value='Подписаться на канал "{{ channel.name }}"'>
     </div>
     <hr>
     <div class="container">
@@ -52,7 +58,7 @@
                 <div class="form-group">
                     <label for="poster">Постер</label>
                     <input type="file" name="poster" class="form-control-file" id="poster"
-                           accept="image/jpeg,image/jpg,image/png,image/gif" required>
+                           accept="image/jpeg,image/jpg,image/png,image/gif">
                 </div>
                 <div class="form-group">
                     <label for="category">Категория</label>
@@ -98,6 +104,6 @@
             </div>
         </div>
     {% endif %}
-
     <script src="{% static 'js/channel_script.js' %}"></script>
+    <script src="{% static 'js/subscribe_script.js' %}"></script>
 {% endblock content %}

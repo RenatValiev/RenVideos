@@ -8,6 +8,8 @@ class Channel(models.Model):
     logo = models.ImageField("Картинка канала", upload_to='channel_images/', null=True)
     description = models.TextField("Описание канала")
     owner = models.ForeignKey(User, verbose_name="Владелец канала", on_delete=models.CASCADE)
+    subscribers = models.ManyToManyField(User, verbose_name='Пользователи, подписавшиеся на канал',
+                                         related_name='subscribed_users')
 
     def __str__(self):
         return self.name

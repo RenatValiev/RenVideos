@@ -6,3 +6,5 @@ media/*
 .vscode
 .idea/*
 .idea
+test-opencv.py
+/main/signals.py

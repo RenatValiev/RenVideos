@@ -1,4 +1,4 @@
-# Импортируем необходимые библиотеки
+# Импортируем:
 # Возможность отправки статуса в качестве ответа
 from django.http import HttpResponse
 # Тоже формы ответа сервера
@@ -10,6 +10,8 @@ from .models import Video, Channel, Comment, Category
 from django.contrib.auth.models import User
 # Нечёткое сравнение
 from fuzzywuzzy import fuzz
+# Модуль для получения отдельного кадра из видео
+import cv2
 
 
 # Главная страница
@@ -110,10 +112,10 @@ class UploadVideoView(View):
         name = request.POST.get('name')
         description = request.POST.get('description')
         video = request.FILES.get('video')
-        poster = request.FILES.get('poster')
         category_name = request.POST.get('category')
         category = Category.objects.get(name=category_name)
         channel_name = request.POST.get('channel')
+        poster = request.FILES.get('poster')
         channel = Channel.objects.get(name=channel_name)
         # Создаём запись о видео в базе данных
         new_video = Video.objects.create(
@@ -124,6 +126,7 @@ class UploadVideoView(View):
             category=category,
             channel=channel
         )
+        new_video.save()
         response.status_code = 200
         # Возвращаем информацию о выполнении запроса
         return response
@@ -441,3 +444,23 @@ class LikeVideo(View):
     #         # Сохраняем изменения
     #         video.save()
     #         response.status_code = 200
+
+
+class Subscribe(View):
+    def post(self, request):
+        response = HttpResponse()
+        try:
+            channel_name = request.POST.get('channel_name')
+            user = User.objects.get(username=request.user.username)
+            channel = Channel.objects.get(name=channel_name)
+            try:
+                channel.subscribers.get(username=request.user.username)
+                channel.subscribers.remove(user)
+                response.status_code = 201
+            except:
+                channel.subscribers.add(user)
+                channel.save()
+                response.status_code = 200
+        except:
+            response.status_code = 405
+        return response
