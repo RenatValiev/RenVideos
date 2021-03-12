@@ -28,8 +28,11 @@
             <li class="nav-item {% if page == 'profile' %}active{% endif %}">
                 <a href="{% url 'profile' %}" class="nav-link">Мой профиль</a>
             </li>
+            <li class="nav-item {% if page == 'generate-poster' %}active{% endif %}">
+                <a href="{% url 'generate-poster' %}" class="nav-link">Сгенерировать постер</a>
+            </li>
         </ul>
-        
+
         <!-- Форма поиска -->
         <form action="/search" method="GET" class="form-inline">
             <input class="form-control mr-sm-2" type="search" placeholder="Поиск по видео" name="request_text">

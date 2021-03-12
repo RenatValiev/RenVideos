@@ -8,3 +8,5 @@ media/*
 .idea
 test-opencv.py
 /main/signals.py
+media/cached_posters/*
+media/cached_videos/*

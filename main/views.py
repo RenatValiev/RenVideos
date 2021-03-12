@@ -1,5 +1,7 @@
 # Импортируем:
 # Возможность отправки статуса в качестве ответа
+import os
+
 from django.http import HttpResponse
 # Тоже формы ответа сервера
 from django.shortcuts import render, redirect
@@ -12,6 +14,7 @@ from django.contrib.auth.models import User
 from fuzzywuzzy import fuzz
 # Модуль для получения отдельного кадра из видео
 import cv2
+from django.core.files.storage import FileSystemStorage
 
 
 # Главная страница
@@ -463,4 +466,72 @@ class Subscribe(View):
                 response.status_code = 200
         except:
             response.status_code = 405
+        return response
+
+
+class GeneratePoster(View):
+    """Генерация постера к видео"""
+
+    def get(self, request):
+        # Страничка с формой
+        # Пускаем только зарегестрированных пользователей
+        if request.user.is_authenticated:
+            return render(request, 'main/generate_poster.html')
+        else:
+            return redirect('/accounts/login')
+
+    def post(self, request):
+        # Непосредственно генерация постера
+        response = HttpResponse()
+        # Пропускаем только вошедших пользователей
+        if request.user.is_authenticated:
+            # Обрабатываем возможные ошибки
+            try:
+                # Получаем данные из запроса
+                video = request.FILES.get('video')
+                seconds = request.POST.get('seconds')
+                seconds = int(seconds) * 60
+                # Получаем инструмент для работы с файловым хранилищем от django
+                fs = FileSystemStorage()
+                # Задаем исходное значени счёткчика
+                count = 1
+                # Пока не найдём не занятое имя файла, генерируем со следущим номером
+                while os.path.exists('./media/cached_posters/' + str(count) + ".jpg"):
+                    count += 1
+                # Получаем финальный путь
+                path = './media/cached_posters/' + str(count) + ".jpg"
+                # Получаем веб путь
+                web_path = '/media/cached_posters/' + str(count) + ".jpg"
+                # Задаем исходное значени счёткчика
+                count = 1
+                # Пока не найдём не занятое имя файла, генерируем со следущим номером
+                while os.path.exists('./media/cached_videos/' + str(count) + ".mp4"):
+                    count += 1
+                # Получаем финальный путь
+                video_path = './cached_videos/' + str(count) + '.mp4'
+                # Сохраняем видео
+                fs.save(video_path, video)
+                # Открываем видео в инструменте для изъятия кадров
+                video = cv2.VideoCapture('./media/cached_videos/' + str(count) + '.mp4')
+                # Отматываем до нужного кадра
+                i = 0
+                ret = True
+                while i < int(seconds):
+                    if ret:
+                        ret, frame = video.read()
+                        i += 1
+                    else:
+                        # Если не хватает длины видео для отмотки на нужныо кол-во секунд
+                        response.status_code = 202
+                        return response
+                # Записываем полученный кадр
+                print(path)
+                cv2.imwrite(path, frame)
+                response = HttpResponse(web_path)
+                response.status_code = 200
+                return response
+            except:
+                response.status_code = 405
+        else:
+            response.status_code = 201
         return response

@@ -6,7 +6,6 @@ let create_channel_form = document.getElementById("create-channel-form")
 create_channel_form.addEventListener('submit', function (e) {
     // Отменяем действие по умолчанию
     e.preventDefault()
-    // let create_channel_form = document.getElementById("create-channel-form")
     let form_data = new FormData(this)
     fetch('/create-channel', {
         method: 'POST',

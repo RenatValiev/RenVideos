@@ -17,5 +17,6 @@ urlpatterns = [
     path('change-channel', views.ChangeChannel.as_view()),
     path('like', views.LikeVideo.as_view()),
     path('subscribe', views.Subscribe.as_view()),
+    path('generate-poster', views.GeneratePoster.as_view(), name='generate-poster'),
     path('', views.IndexView.as_view(), name="index")
 ]

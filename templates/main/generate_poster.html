@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load header %}
+{% load static %}
+
+{% block title %}
+    Сгенерировать постер к видео
+{% endblock title %}
+
+{% block content %}
+    <div class="container text-center">
+        <h1>
+            Сгенерировать постер
+        </h1>
+    </div>
+    <div class="container">
+        <form id="generate-poster-form" enctype=multipart/form-data>
+            <div class="form-group">
+                <label for="video-input">Выберите видео файл</label>
+                <input type="file" class="form-control-file" id="video-input" name="video" accept="video/mp4" required>
+            </div>
+            <div class="form-group">
+                <label for="seconds-input">Выберите секунду видео, кадр которой будет получен:</label>
+                <input type="number" value="180" class="form-control" name="seconds" id="seconds-input" required>
+            </div>
+            {% csrf_token %}
+            <input type="submit" value="Сгенерировать постер" class="btn btn-outline-primary">
+        </form>
+    </div>
+    <script src="{% static 'js/generate-poster_script.js' %}"></script>
+{% endblock content %}
