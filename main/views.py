@@ -490,7 +490,7 @@ class GeneratePoster(View):
                 # Получаем данные из запроса
                 video = request.FILES.get('video')
                 seconds = request.POST.get('seconds')
-                seconds = int(seconds) * 60
+                seconds = int(seconds) * 25
                 # Получаем инструмент для работы с файловым хранилищем от django
                 fs = FileSystemStorage()
                 # Задаем исходное значени счёткчика
