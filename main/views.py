@@ -1,7 +1,7 @@
 # Импортируем:
-# Возможность отправки статуса в качестве ответа
-import os
 
+import os
+# Возможность отправки статуса в качестве ответа
 from django.http import HttpResponse
 # Тоже формы ответа сервера
 from django.shortcuts import render, redirect
@@ -17,16 +17,20 @@ import cv2
 from django.core.files.storage import FileSystemStorage
 
 
-# Главная страница
 class IndexView(View):
-    def get(self, request):
+    """Главная страница"""
+
+    @staticmethod
+    def get(request):
         videos = Video.objects.all()[::-1]
         return render(request, 'main/index.html', {"videos": videos})
 
 
-# Страница видео
 class VideoView(View):
-    def get(self, request, name):
+    """Страница определённого видео"""
+
+    @staticmethod
+    def get(request, name):
         reaction = 'none'
         video = Video.objects.get(name=name)
         if request.user.is_authenticated:
@@ -42,9 +46,11 @@ class VideoView(View):
         return render(request, 'main/video.html', {"video": video, "reaction": reaction})
 
 
-# Страница канала
 class ChannelView(View):
-    def get(self, request, name):
+    """Страница канала"""
+
+    @staticmethod
+    def get(request, name):
         # Получаем объект канала
         channel = Channel.objects.get(name=name)
         # Получаем общее кол-во видео
@@ -54,9 +60,11 @@ class ChannelView(View):
         return render(request, 'main/channel.html', {"channel": channel, "count": count, "categories": categories})
 
 
-# Добавление комментария под видео
 class AddCommentView(View):
-    def post(self, request):
+    """Добавление комментария к видео"""
+
+    @staticmethod
+    def post(request):
         # Начинаем готовить ответ
         response = HttpResponse()
         # Небольшая защита (долго писать от чего)
@@ -83,19 +91,17 @@ class AddCommentView(View):
         return response
 
 
-# Страничка профиля пользователя
 class ProfileView(View):
-    def get(self, request):
+    """Профиль(личный кабинет) пользователя"""
+
+    @staticmethod
+    def get(request):
         # Смотрим, вошёл ли пользователь и пропускаем только вошедших, иначе отправляем на страницу входа
         if request.user.is_authenticated:
             # Получаем список каналов, владельцем которых является пользователь
             try:
                 channel_list = Channel.objects.filter(
                     owner__username=request.user.username)
-                # try:
-                #     channel_list[0]
-                # except:
-                #     channel_list = [channel_list]
                 are_channels = True
             except:
                 print("no channels")
@@ -107,11 +113,14 @@ class ProfileView(View):
             return redirect('/accounts/login')
 
 
-# Загрузка видео
 class UploadVideoView(View):
-    def post(self, request):
+    """Загрузка на сайт нового видео"""
+
+    @staticmethod
+    def post(request):
+        # Создаём объект ответа
         response = HttpResponse()
-        # Получаем информацию о будущем видео и необходимые объекты базы данных
+        # Получаем данные из запроса и из базы данных
         name = request.POST.get('name')
         description = request.POST.get('description')
         video = request.FILES.get('video')
@@ -131,13 +140,15 @@ class UploadVideoView(View):
         )
         new_video.save()
         response.status_code = 200
-        # Возвращаем информацию о выполнении запроса
+        # Возвращаем ответ
         return response
 
 
-# Поиск видео
 class Search(View):
-    def get(self, request):
+    """Поиск по сайту"""
+
+    @staticmethod
+    def get(request):
         # Получаем текст поиска
         request_text = request.GET.get('request_text')
         # Получаем видео
@@ -146,7 +157,9 @@ class Search(View):
         correct_videos = []
         # Обрабатываем массив видео
         for video in videos:
-            # if (fuzz.ratio(video.name.lower(), request_text.lower()) > 45) or (fuzz.ratio(request_text.lower(), video.description.lower()) > 45):
+            # Альтернативная версия условия поиска
+            # if (fuzz.ratio(video.name.lower(), request_text.lower()) > 45) or (fuzz.ratio(request_text.lower(),
+            # video.description.lower()) > 45):
 
             # Если найдено нужное кол-во совпадений запроса и названиявидео считаем его подходящим
             if fuzz.ratio(video.name.lower(), request_text.lower()) > 45:
@@ -156,15 +169,20 @@ class Search(View):
 
 
 class CreateChannel(View):
-    # Страница с формой создания канала
-    def get(self, request):
+    """Создание канала"""
+
+    @staticmethod
+    def get(request):
+        """Страница с формой для заполнения"""
         return render(request, 'main/create-channel.html', {})
 
-    # Создание канала
-    def post(self, request):
-        # Проверяем, вошёл ли пользователь (в принципе, если он не вошёл он не должен отправлять сюда запрос, но на всякий случай надо проверить)
+    @staticmethod
+    def post(request):
+        """Непосредственно создание канала"""
+
+        # Проверяем, вошёл ли пользователь
         if request.user.is_authenticated:
-            # Получаем нужные данные
+            # Получаем данные из запроса
             name = request.POST.get("name")
             description = request.POST.get("description")
             owner = User.objects.get(username=request.user.username)
@@ -177,6 +195,7 @@ class CreateChannel(View):
                 logo=logo
             )
             new_channel.save()
+            # Возвращаем ответ
             response = HttpResponse()
             response.status_code = 200
             return response
@@ -187,7 +206,8 @@ class CreateChannel(View):
 class DropChannel(View):
     """Удаление канала"""
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         # Проверяем, вошёл ли пользователь
         if request.user.is_authenticated:
             # Получаем введённо имя канала
@@ -215,10 +235,13 @@ class DropChannel(View):
 
 
 class DropVideo(View):
-    def post(self, request):
+    """Удаление видео"""
+
+    @staticmethod
+    def post(request):
         # Проверяем, вошёл ли пользователь
         if request.user.is_authenticated:
-            # Получаем введённо имя канала
+            # Получаем введённо имя видео
             video_name = request.POST.get('video-name')
             # Начинаем готовить ответ пользователю
             response = HttpResponse()
@@ -229,7 +252,7 @@ class DropVideo(View):
                 # Если не получается, значит введено неверное имя канала
                 response.status_code = 405
                 return response
-            # Проверяем, является ли пользователь владельцем канала
+            # Проверяем, является ли пользователь владельцем канала, на котором рамещено видео
             if request.user.username == video.channel.owner.username:
                 # Удаляем объект
                 video.delete()
@@ -245,7 +268,8 @@ class DropVideo(View):
 class ChangeVideoPage(View):
     """Страница изменения видео"""
 
-    def get(self, request, video):
+    @staticmethod
+    def get(request, video):
         # Пробуем получить видео
         try:
             video = Video.objects.get(name=video)
@@ -261,17 +285,18 @@ class ChangeVideoPage(View):
 class ChangeVideo(View):
     """Изменение видео"""
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         # Получаем данные из запроса
         name = request.POST.get('name')
         description = request.POST.get('description')
         category = request.POST.get('category')
-        id = request.POST.get('id')
+        video_id = request.POST.get('id')
         # Создаём объект ответа
         response = HttpResponse()
         # Пробуем получить видео
         try:
-            video = Video.objects.get(id=id)
+            video = Video.objects.get(id=video_id)
         except:
             response.status_code = 404
             return response
@@ -309,7 +334,8 @@ class ChangeVideo(View):
 class ChangeChannelPage(View):
     """Страница изменения канала"""
 
-    def get(self, request, channel):
+    @staticmethod
+    def get(request, channel):
         try:
             channel = Channel.objects.get(name=channel)
         except:
@@ -320,13 +346,14 @@ class ChangeChannelPage(View):
 class ChangeChannel(View):
     """Изменение канала"""
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         name = request.POST.get('name')
         description = request.POST.get('description')
-        id = request.POST.get('id')
+        channel_id = request.POST.get('id')
         response = HttpResponse()
         try:
-            channel = Channel.objects.get(id=id)
+            channel = Channel.objects.get(id=channel_id)
         except:
             response.status_code = 404
             return response
@@ -346,7 +373,8 @@ class ChangeChannel(View):
 class LikeVideo(View):
     """Возможность ставить лайк или дизлайк видео"""
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         # Получаем объект пользователя
         user = User.objects.get(username=request.user.username)
         # Получаем имя нужного видео
@@ -357,9 +385,6 @@ class LikeVideo(View):
         # Пробуем получить объект видео в базе данных
         try:
             video = Video.objects.get(name=name)
-            # video.liked_by.remove(user)
-            # video.disliked_by.remove(user)
-            # video.rated_by.remove(user)
         except:
             response.status_code = 405
             return response
@@ -380,14 +405,13 @@ class LikeVideo(View):
         if (not liked) and (not disliked):
             # Если ещё не ставил оценки, то ставим нужную
             if request.POST.get('type') == 'like':
-                print('1')
                 video.likes += 1
                 video.liked_by.add(user)
                 response.status_code = 200
             elif request.POST.get('type') == 'dislike':
-                print(2)
                 video.dislikes += 1
                 video.disliked_by.add(user)
+                response.status_code = 200
             else:
                 # Если не лайк, и не дизлайк, то сообщаем об ошибке
                 print("error")
@@ -418,70 +442,57 @@ class LikeVideo(View):
             # Если хочет поставить второй дизлайк
             response.status_code = 201
         else:
-            # Если какая-то неведомая ситуация, то надо её обработать
+            # Если какая-то другая ситуация, то сообщаем об ошибке
             print("error")
             response.status_code = 405
         # Сохраняем изменения
         video.save()
         # Возвращаем ответ
         return response
-    # Старый код. После того, как буду убеждён в работоспособности нового, будет удалён
-    # except:
-    #     try:
-    #         response.status_code = 201
-    #         video.disliked_by.get(username=request.user.username)
-    #     except:
-    #         # Если не ставил, то записываем, что теперь поставил
-    #         # Увеличиваем на 1 кол-во лайков/дизлайков
-    #         if request.POST.get('type') == 'like':
-    #             video.likes += 1
-    #             video.liked_by.add(user)
-    #         elif request.POST.get('type') == 'dislike':
-    #             video.dislikes += 1
-    #             video.disliked_by.add(user)
-    #         else:
-    #             # Если не лайк, и не дизлайк, то сообщаем об ошибке
-    #             print("error")
-    #             response.status_code = 405
-    #             return response
-    #         # Сохраняем изменения
-    #         video.save()
-    #         response.status_code = 200
 
 
 class Subscribe(View):
-    def post(self, request):
+    """Осуществление подписки на канал"""
+
+    @staticmethod
+    def post(request):
+        # Начинаем готовить ответ
         response = HttpResponse()
+        # Получаем данные из запроса и базы данных
+        channel_name = request.POST.get('channel_name')
+        user = User.objects.get(username=request.user.username)
+        channel = Channel.objects.get(name=channel_name)
+        # Смотрим, подписан ли пользователь на канал
         try:
-            channel_name = request.POST.get('channel_name')
-            user = User.objects.get(username=request.user.username)
-            channel = Channel.objects.get(name=channel_name)
-            try:
-                channel.subscribers.get(username=request.user.username)
-                channel.subscribers.remove(user)
-                response.status_code = 201
-            except:
-                channel.subscribers.add(user)
-                channel.save()
-                response.status_code = 200
+            # Если да, то отменяем подписку
+            channel.subscribers.get(username=request.user.username)
+            channel.subscribers.remove(user)
+            response.status_code = 201
         except:
-            response.status_code = 405
+            # Если нет, то оформляем подписку
+            channel.subscribers.add(user)
+            channel.save()
+            response.status_code = 200
+        # Возвращаем ответ
         return response
 
 
 class GeneratePoster(View):
     """Генерация постера к видео"""
 
-    def get(self, request):
-        # Страничка с формой
-        # Пускаем только зарегестрированных пользователей
+    @staticmethod
+    def get(request):
+        """HTML страница"""
+
+        # Пускаем только зарегистрированных пользователей
         if request.user.is_authenticated:
             return render(request, 'main/generate_poster.html')
         else:
             return redirect('/accounts/login')
 
-    def post(self, request):
-        # Непосредственно генерация постера
+    @staticmethod
+    def post(request):
+        """Непосредственно генерация постера"""
         response = HttpResponse()
         # Пропускаем только вошедших пользователей
         if request.user.is_authenticated:
@@ -494,18 +505,18 @@ class GeneratePoster(View):
                 seconds = int(seconds) * fps
                 # Получаем инструмент для работы с файловым хранилищем от django
                 fs = FileSystemStorage()
-                # Задаем исходное значени счёткчика
+                # Задаем исходное значение счётчика
                 count = 1
-                # Пока не найдём не занятое имя файла, генерируем со следущим номером
+                # Пока не найдём не занятое имя файла, генерируем со следующим номером
                 while os.path.exists('./media/cached_posters/' + str(count) + ".jpg"):
                     count += 1
                 # Получаем финальный путь
                 path = './media/cached_posters/' + str(count) + ".jpg"
                 # Получаем веб путь
                 web_path = '/media/cached_posters/' + str(count) + ".jpg"
-                # Задаем исходное значени счёткчика
+                # Задаем исходное значение счётчика
                 count = 1
-                # Пока не найдём не занятое имя файла, генерируем со следущим номером
+                # Пока не найдём не занятое имя файла, генерируем со следующим номером
                 while os.path.exists('./media/cached_videos/' + str(count) + ".mp4"):
                     count += 1
                 # Получаем финальный путь
@@ -517,12 +528,13 @@ class GeneratePoster(View):
                 # Отматываем до нужного кадра
                 i = 0
                 ret = True
+                frame = ''
                 while i < int(seconds):
                     if ret:
                         ret, frame = video.read()
                         i += 1
                     else:
-                        # Если не хватает длины видео для отмотки на нужныо кол-во секунд
+                        # Если не хватает длины видео для отмотки на нужное кол-во секунд
                         response.status_code = 202
                         return response
                 # Записываем полученный кадр
@@ -535,4 +547,5 @@ class GeneratePoster(View):
                 response.status_code = 405
         else:
             response.status_code = 201
+        # Возвращаем ответ
         return response
