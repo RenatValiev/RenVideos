@@ -1,4 +1,4 @@
-## RVideos
+## RenVideos
 Простой видеохостинг, написанный на python django
 
 ## Системные требования
@@ -9,7 +9,6 @@
 ## Как запустить сайт RVideos
 Выполните следующие команды
 ```bash
-git clone https://github.com/coder8080/RVideos
 cd ./RVideos
 pip install -r requirements.txt
 python ./generate_token.py
